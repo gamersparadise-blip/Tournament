@@ -1,9 +1,14 @@
-
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def init_db():
     conn = sqlite3.connect('tournaments.db')
@@ -22,10 +27,16 @@ def init_db():
         mobile TEXT,
         email TEXT,
         pubg_id TEXT,
-        tournament_id INTEGER
+        tournament_id INTEGER,
+        game TEXT,
+        screenshot TEXT
     )""")
     conn.commit()
     conn.close()
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def home():
@@ -48,18 +59,6 @@ def admin():
     tournaments = c.fetchall()
     conn.close()
     return render_template("admin.html", tournaments=tournaments)
-
-@app.route('/register', methods=['GET', 'POST'])
-import os
-from werkzeug.utils import secure_filename
-
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -94,8 +93,8 @@ def register():
     return render_template("register.html", tournaments=tournaments)
 
 
-init_db()  # ensure DB is created even on Render
+# Initialize database even on Render
+init_db()
 
 if __name__ == '__main__':
     app.run(debug=True)
-
