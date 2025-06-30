@@ -102,7 +102,7 @@ def register():
         name = request.form['name']
         mobile = request.form['mobile']
         pubg_id = request.form['pubg_id']
-        tournament_id = request.form['tournament_id']
+        tournament_id = int(request.form['tournament_id'])  # 👈 Add this line
         game = request.form['game']
 
         file = request.files['screenshot']
