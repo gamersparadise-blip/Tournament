@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Create Tournament</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h2>Create Tournament</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Tournament Name" required><br>
+        <input type="date" name="date" required><br>
+        <input type="time" name="time" required><br>
+        <input type="text" name="room_id" placeholder="Room ID" required><br>
+        <input type="text" name="room_pass" placeholder="Room Password" required><br>
+        <button type="submit">Create</button>
+    </form>
+
+    <h3>Existing Tournaments</h3>
+    <ul>
+        {% for t in tournaments %}
+            <li>{{ t[1] }} on {{ t[2] }} at {{ t[3] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register for Tournament</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h2>Register for Tournament</h2>
+    <form method="POST">
+        <input type="text" name="name" placeholder="Your Name" required><br>
+        <input type="text" name="mobile" placeholder="Mobile Number" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="text" name="pubg_id" placeholder="PUBG ID" required><br>
+        <select name="tournament_id" required>
+            {% for t in tournaments %}
+                <option value="{{ t[0] }}">{{ t[1] }}</option>
+            {% endfor %}
+        </select><br>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
