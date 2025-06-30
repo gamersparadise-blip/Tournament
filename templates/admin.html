@@ -46,7 +46,7 @@
       <select name="filter_tournament" onchange="this.form.submit()">
         <option value="">-- Show All --</option>
         {% for tid, tname in tournaments %}
-          <option value="{{ tid }}" {% if selected_id == str(tid) %}selected{% endif %}>{{ tname }}</option>
+          <option value="{{ tid }}" {% if selected_id == tid|string %}selected{% endif %}>{{ tname }}</option>
         {% endfor %}
       </select>
     </form>
