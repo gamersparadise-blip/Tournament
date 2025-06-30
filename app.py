@@ -56,26 +56,17 @@ def admin():
                   (name, date, time, room_id, room_pass))
         conn.commit()
 
-    # Fetch tournaments
-c.execute("""
-    SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
-    FROM registrations r
-    JOIN tournaments t ON r.tournament_id = t.id
-    ORDER BY r.id DESC
-""")
-
+    # ✅ No extra indent here
+    c.execute("SELECT * FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
 
-    # DEBUG - TEMP: use fallback if join fails
     c.execute("""
-        SELECT name, mobile, pubg_id, game, tournament_id, screenshot FROM registrations
-        ORDER BY id DESC
+        SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
+        FROM registrations r
+        JOIN tournaments t ON r.tournament_id = t.id
+        ORDER BY r.id DESC
     """)
     registrations = c.fetchall()
-
-    print(f"[DEBUG] Showing {len(registrations)} registrations")
-    for r in registrations:
-        print("[DEBUG] Registration:", r)
 
     conn.close()
     return render_template("admin.html", tournaments=tournaments, registrations=registrations)
