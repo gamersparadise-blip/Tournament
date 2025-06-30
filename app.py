@@ -57,7 +57,13 @@ def admin():
         conn.commit()
 
     # Fetch tournaments
-    c.execute("SELECT * FROM tournaments ORDER BY id DESC")
+c.execute("""
+    SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
+    FROM registrations r
+    JOIN tournaments t ON r.tournament_id = t.id
+    ORDER BY r.id DESC
+""")
+
     tournaments = c.fetchall()
 
     # DEBUG - TEMP: use fallback if join fails

@@ -53,31 +53,31 @@
 
     <h3>🎮 Registered Users</h3>
     <table class="reg-table">
-      <tr>
-        <th>Name</th>
-        <th>Mobile</th>
-        <th>PUBG ID</th>
-        <th>Game</th>
-        <th>Tournament</th>
-        <th>Payment Screenshot</th>
-      </tr>
-      {% for reg in registrations %}
-      <tr>
-        <td>{{ reg[0] }}</td>
-        <td>{{ reg[1] }}</td>
-        <td>{{ reg[2] }}</td>
-        <td>{{ reg[3] }}</td>
-        <td>{{ reg[4] }}</td>
-        <td>
-          {% if reg[5] %}
-            <img src="{{ url_for('static', filename='../uploads/' + reg[5]) }}" class="screenshot-img">
-          {% else %}
-            No Image
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>PUBG ID</th>
+      <th>Game</th>
+      <th>Tournament</th>
+      <th>Screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for reg in registrations %}
+    <tr>
+      <td>{{ reg[0] }}</td> <!-- name -->
+      <td>{{ reg[1] }}</td> <!-- mobile -->
+      <td>{{ reg[2] }}</td> <!-- pubg_id -->
+      <td>{{ reg[3] }}</td> <!-- game -->
+      <td>{{ reg[4] }}</td> <!-- tournament name -->
+      <td><img src="/uploads/{{ reg[5] }}" width="100" alt="screenshot"></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
   </div>
 </body>
 </html>
