@@ -1,37 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Tournament</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Admin - Tournament Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .screenshot-img {
+        width: 100px;
+        border: 1px solid #555;
+        border-radius: 6px;
+        margin-top: 4px;
+    }
+    .reg-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .reg-table th, .reg-table td {
+        padding: 10px;
+        border: 1px solid #444;
+        text-align: center;
+    }
+    select, input, button {
+        margin: 6px 0;
+    }
+  </style>
 </head>
 <body class="neon-theme">
-    <div class="container">
-        <h2>🛠️ Admin Panel – Create Tournament</h2>
-        <form method="POST">
-            <input type="text" name="name" placeholder="Tournament Name" required><br>
+  <div class="container">
+    <h2>🛠 Admin Panel</h2>
 
-            <label>Date:</label>
-            <input type="date" name="date" required><br>
+    <h3>Create New Tournament</h3>
+    <form method="POST">
+      <input type="text" name="name" placeholder="Tournament Name" required>
+      <input type="date" name="date" required>
+      <input type="time" name="time" required>
+      <input type="text" name="room_id" placeholder="Room ID" required>
+      <input type="text" name="room_pass" placeholder="Room Password" required>
+      <button type="submit">Create</button>
+    </form>
 
-            <label>Time:</label>
-            <input type="time" name="time" required><br>
+    <h3>📋 Filter Registered Users</h3>
+    <form method="GET">
+      <label for="filter_tournament">Filter by Tournament:</label>
+      <select name="filter_tournament" onchange="this.form.submit()">
+        <option value="">-- Show All --</option>
+        {% for tid, tname in tournaments %}
+          <option value="{{ tid }}" {% if selected_id == str(tid) %}selected{% endif %}>{{ tname }}</option>
+        {% endfor %}
+      </select>
+    </form>
 
-            <input type="text" name="room_id" placeholder="Room ID" required><br>
-            <input type="text" name="room_pass" placeholder="Room Password" required><br>
-
-            <button type="submit">Create Tournament</button>
-        </form>
-
-        <hr style="margin: 40px 0; border-color: #00ffcc44;">
-
-        <h3>📋 Existing Tournaments</h3>
-        <ul style="text-align: left;">
-            {% for t in tournaments %}
-                <li><strong>{{ t[1] }}</strong> on {{ t[2] }} at {{ t[3] }} | Room ID: {{ t[4] }}, Pass: {{ t[5] }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <h3>🎮 Registered Users</h3>
+    <table class="reg-table">
+      <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>PUBG ID</th>
+        <th>Game</th>
+        <th>Tournament</th>
+        <th>Payment Screenshot</th>
+      </tr>
+      {% for reg in registrations %}
+      <tr>
+        <td>{{ reg[0] }}</td>
+        <td>{{ reg[1] }}</td>
+        <td>{{ reg[2] }}</td>
+        <td>{{ reg[3] }}</td>
+        <td>{{ reg[4] }}</td>
+        <td>
+          {% if reg[5] %}
+            <img src="{{ url_for('static', filename='../uploads/' + reg[5]) }}" class="screenshot-img">
+          {% else %}
+            No Image
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
 </body>
 </html>

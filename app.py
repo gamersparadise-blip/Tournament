@@ -51,7 +51,9 @@ def home():
 def admin():
     conn = sqlite3.connect('tournaments.db')
     c = conn.cursor()
-    if request.method == 'POST':
+
+    if request.method == 'POST' and 'name' in request.form:
+        # Create new tournament
         name = request.form['name']
         date = request.form['date']
         time = request.form['time']
@@ -60,10 +62,33 @@ def admin():
         c.execute("INSERT INTO tournaments (name, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?)",
                   (name, date, time, room_id, room_pass))
         conn.commit()
-    c.execute("SELECT * FROM tournaments ORDER BY id DESC")
+
+    # Fetch all tournaments
+    c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
+
+    selected_tournament_id = request.args.get('filter_tournament')
+
+    if selected_tournament_id:
+        c.execute("""
+            SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
+            FROM registrations r
+            JOIN tournaments t ON r.tournament_id = t.id
+            WHERE t.id = ?
+            ORDER BY r.id DESC
+        """, (selected_tournament_id,))
+    else:
+        c.execute("""
+            SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
+            FROM registrations r
+            JOIN tournaments t ON r.tournament_id = t.id
+            ORDER BY r.id DESC
+        """)
+
+    registrations = c.fetchall()
     conn.close()
-    return render_template("admin.html", tournaments=tournaments)
+    return render_template("admin.html", tournaments=tournaments, registrations=registrations, selected_id=selected_tournament_id)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
