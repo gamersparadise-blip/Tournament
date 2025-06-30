@@ -69,6 +69,8 @@ def register():
     conn.close()
     return render_template("register.html", tournaments=tournaments)
 
+init_db()  # ensure DB is created even on Render
+
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
+
