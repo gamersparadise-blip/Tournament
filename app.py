@@ -70,7 +70,6 @@ def register():
     if request.method == 'POST':
         name = request.form['name']
         mobile = request.form['mobile']
-        email = request.form['email']
         pubg_id = request.form['pubg_id']
         tournament_id = request.form['tournament_id']
         game = request.form['game']
