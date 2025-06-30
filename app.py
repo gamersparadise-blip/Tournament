@@ -4,11 +4,16 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
-
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+# Ensure upload folder exists on Render
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 def init_db():
     conn = sqlite3.connect('tournaments.db')
