@@ -83,8 +83,8 @@ def register():
         else:
             return render_template("register.html", tournaments=tournaments, error="Invalid screenshot format.")
 
-        c.execute("INSERT INTO registrations (name, mobile, email, pubg_id, tournament_id, game, screenshot) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                  (name, mobile, email, pubg_id, tournament_id, game, filename))
+        c.execute("INSERT INTO registrations (name, mobile, pubg_id, tournament_id, game, screenshot) VALUES (?, ?, ?, ?, ?, ?)",
+          (name, mobile, pubg_id, tournament_id, game, filename))
         conn.commit()
         conn.close()
         return render_template("success.html")
