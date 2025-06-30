@@ -66,6 +66,7 @@ def register():
     c = conn.cursor()
     c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
+    print("Fetched tournaments:", tournaments)
 
     if request.method == 'POST':
         name = request.form['name']
