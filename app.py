@@ -50,24 +50,49 @@ def admin():
     return render_template("admin.html", tournaments=tournaments)
 
 @app.route('/register', methods=['GET', 'POST'])
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     conn = sqlite3.connect('tournaments.db')
     c = conn.cursor()
     c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
+
     if request.method == 'POST':
         name = request.form['name']
         mobile = request.form['mobile']
         email = request.form['email']
         pubg_id = request.form['pubg_id']
         tournament_id = request.form['tournament_id']
-        c.execute("INSERT INTO registrations (name, mobile, email, pubg_id, tournament_id) VALUES (?, ?, ?, ?, ?)",
-                  (name, mobile, email, pubg_id, tournament_id))
+        game = request.form['game']
+
+        file = request.files['screenshot']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+        else:
+            return render_template("register.html", tournaments=tournaments, error="Invalid screenshot format.")
+
+        c.execute("INSERT INTO registrations (name, mobile, email, pubg_id, tournament_id, game, screenshot) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                  (name, mobile, email, pubg_id, tournament_id, game, filename))
         conn.commit()
         conn.close()
         return render_template("success.html")
+
     conn.close()
     return render_template("register.html", tournaments=tournaments)
+
 
 init_db()  # ensure DB is created even on Render
 

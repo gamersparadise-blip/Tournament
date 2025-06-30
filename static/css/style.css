@@ -1,19 +1,51 @@
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0f0f0f;
-    color: #00ff99;
-    padding: 20px;
+body.neon-theme {
+    font-family: 'Orbitron', sans-serif;
+    background: url('/static/images/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #00ffcc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
+
+.container {
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00ffcc;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
 input, select, button {
-    padding: 10px;
-    margin: 5px;
     width: 100%;
-    max-width: 300px;
-    background-color: #1e1e1e;
-    color: #00ff99;
-    border: 1px solid #00ff99;
+    padding: 12px;
+    margin: 10px 0;
+    background: #111;
+    color: #00ffcc;
+    border: 1px solid #00ffcc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #00ffcc33;
 }
+
 button {
+    background-color: #00ffcc;
+    color: #000;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #00e6b8;
+}
+
+.file-upload {
+    display: block;
+    margin-top: 15px;
+    color: #00ffcc;
 }

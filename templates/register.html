@@ -1,23 +1,38 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Register for Tournament</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h2>Register for Tournament</h2>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Your Name" required><br>
-        <input type="text" name="mobile" placeholder="Mobile Number" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="text" name="pubg_id" placeholder="PUBG ID" required><br>
-        <select name="tournament_id" required>
-            {% for t in tournaments %}
-                <option value="{{ t[0] }}">{{ t[1] }}</option>
-            {% endfor %}
-        </select><br>
-        <button type="submit">Register</button>
-    </form>
+<body class="neon-theme">
+    <div class="container">
+        <h2>🎮 Tournament Registration</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="name" placeholder="Your Name" required><br>
+            <input type="text" name="mobile" placeholder="Mobile Number" required><br>
+
+            <select name="game" required>
+                <option value="" disabled selected>Select Game</option>
+                <option value="BGMI">BGMI</option>
+                <option value="Free Fire">Free Fire</option>
+                <option value="CS:GO">CS:GO</option>
+            </select><br>
+
+            <select name="tournament_id" required>
+                <option value="" disabled selected>Select Tournament</option>
+                {% for t in tournaments %}
+                    <option value="{{ t[0] }}">{{ t[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="screenshot" class="file-upload">Upload Payment Screenshot:</label>
+            <input type="file" name="screenshot" accept="image/*" required><br>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
 </body>
 </html>
