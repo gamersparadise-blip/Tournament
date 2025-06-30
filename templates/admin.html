@@ -1,26 +1,37 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin - Create Tournament</title>
+    <meta charset="UTF-8">
+    <title>Create Tournament</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h2>Create Tournament</h2>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Tournament Name" required><br>
-        <input type="date" name="date" required><br>
-        <input type="time" name="time" required><br>
-        <input type="text" name="room_id" placeholder="Room ID" required><br>
-        <input type="text" name="room_pass" placeholder="Room Password" required><br>
-        <button type="submit">Create</button>
-    </form>
+<body class="neon-theme">
+    <div class="container">
+        <h2>🛠️ Admin Panel – Create Tournament</h2>
+        <form method="POST">
+            <input type="text" name="name" placeholder="Tournament Name" required><br>
 
-    <h3>Existing Tournaments</h3>
-    <ul>
-        {% for t in tournaments %}
-            <li>{{ t[1] }} on {{ t[2] }} at {{ t[3] }}</li>
-        {% endfor %}
-    </ul>
+            <label>Date:</label>
+            <input type="date" name="date" required><br>
+
+            <label>Time:</label>
+            <input type="time" name="time" required><br>
+
+            <input type="text" name="room_id" placeholder="Room ID" required><br>
+            <input type="text" name="room_pass" placeholder="Room Password" required><br>
+
+            <button type="submit">Create Tournament</button>
+        </form>
+
+        <hr style="margin: 40px 0; border-color: #00ffcc44;">
+
+        <h3>📋 Existing Tournaments</h3>
+        <ul style="text-align: left;">
+            {% for t in tournaments %}
+                <li><strong>{{ t[1] }}</strong> on {{ t[2] }} at {{ t[3] }} | Room ID: {{ t[4] }}, Pass: {{ t[5] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
