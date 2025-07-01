@@ -6,12 +6,14 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
-# Create uploads folder if it doesn't exist
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-UPLOAD_FOLDER = 'uploads'
+
+UPLOAD_FOLDER = 'uploads'  # 🔹 Define this FIRST
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# 🔹 Ensure upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 def init_db():
     conn = sqlite3.connect('tournaments.db')
