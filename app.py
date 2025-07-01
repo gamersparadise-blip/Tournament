@@ -51,20 +51,23 @@ def admin():
 
     if request.method == 'POST':
         name = request.form['name']
-game = request.form['game']
-date = request.form['date']
-time = request.form['time']
-room_id = request.form['room_id']
-room_pass = request.form['room_pass']
-
-        c.execute("INSERT INTO tournaments (name, game, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?, ?)",
-          (name, game, date, time, room_id, room_pass))
+        game = request.form['game']
+        date = request.form['date']
+        time = request.form['time']
+        room_id = request.form['room_id']
+        room_pass = request.form['room_pass']
+        c.execute(
+            "INSERT INTO tournaments (name, game, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?, ?)",
+            (name, game, date, time, room_id, room_pass)
+        )
         conn.commit()
 
-    c.execute("SELECT id, name, game FROM tournaments ORDER BY id DESC")
+    # Fetch tournaments for dropdown
+    c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
 
     selected_id = request.args.get('filter_tournament')
+
     if selected_id:
         c.execute("""
             SELECT r.name, r.mobile, r.pubg_id, r.game, t.name, r.screenshot
@@ -86,7 +89,6 @@ room_pass = request.form['room_pass']
 
     return render_template("admin.html", tournaments=tournaments, registrations=registrations, selected_id=selected_id)
 
-@app.route('/register', methods=['GET', 'POST'])
 def register():
     conn = sqlite3.connect('tournaments.db')
     c = conn.cursor()
