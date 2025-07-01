@@ -11,6 +11,15 @@
 
         <form method="POST">
             <input type="text" name="name" placeholder="Tournament Name" required><br>
+
+            <label for="game">Game:</label>
+            <select name="game" required>
+                <option value="">-- Select Game --</option>
+                <option value="BGMI">BGMI</option>
+                <option value="Free Fire">Free Fire</option>
+                <option value="CS2">CS2</option>
+            </select><br>
+
             <input type="date" name="date" required><br>
             <input type="time" name="time" required><br>
             <input type="text" name="room_id" placeholder="Room ID" required><br>
@@ -20,43 +29,40 @@
 
         <h3>🗂 Filter by Tournament</h3>
         <form method="GET" action="/admin">
-  <label for="filter_tournament">Filter by Tournament:</label>
-  <select name="filter_tournament" onchange="this.form.submit()">
-    <option value="">-- Show All --</option>
-    {% for tid, tname in tournaments %}
-      <option value="{{ tid }}" {% if selected_id == tid|string %}selected{% endif %}>{{ tname }}</option>
-    {% endfor %}
-  </select>
-</form>
-
+            <label for="filter_tournament">Filter by Tournament:</label>
+            <select name="filter_tournament" onchange="this.form.submit()">
+                <option value="">-- Show All --</option>
+                {% for tid, tname in tournaments %}
+                  <option value="{{ tid }}" {% if selected_id == tid|string %}selected{% endif %}>{{ tname }}</option>
+                {% endfor %}
+            </select>
+        </form>
 
         <h3>📋 Registered Users</h3>
         <table class="reg-table">
-            
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Mobile</th>
-      <th>PUBG ID</th>
-      <th>Game</th>
-      <th>Tournament</th>
-      <th>Screenshot</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for reg in registrations %}
-    <tr>
-      <td>{{ reg[0] }}</td>
-      <td>{{ reg[1] }}</td>
-      <td>{{ reg[2] }}</td>
-      <td>{{ reg[3] }}</td>
-      <td>{{ reg[4] }}</td>
-      <td><img src="/uploads/{{ reg[5] }}" width="100" alt="Screenshot"></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>PUBG ID</th>
+                    <th>Game</th>
+                    <th>Tournament</th>
+                    <th>Screenshot</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reg in registrations %}
+                <tr>
+                    <td>{{ reg[0] }}</td>
+                    <td>{{ reg[1] }}</td>
+                    <td>{{ reg[2] }}</td>
+                    <td>{{ reg[3] }}</td>
+                    <td>{{ reg[4] }}</td>
+                    <td><img src="/uploads/{{ reg[5] }}" width="100" alt="Screenshot"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

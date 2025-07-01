@@ -14,17 +14,14 @@
             <input type="text" name="mobile" placeholder="Mobile Number" required><br>
             <input type="text" name="pubg_id" placeholder="PUBG ID or Game Username" required><br>
 
-            <select name="game" required>
-                <option value="" disabled selected>Select Game</option>
-                <option value="BGMI">BGMI</option>
-                <option value="Free Fire">Free Fire</option>
-                <option value="CS:GO">CS:GO</option>
-            </select><br>
+            <!-- Game (autofilled and readonly) -->
+            <input type="text" name="game" id="gameInput" placeholder="Game will auto-fill" readonly required><br>
 
-            <select name="tournament_id" required>
+            <!-- Tournament Dropdown with data-game -->
+            <select name="tournament_id" id="tournamentSelect" required>
                 <option value="" disabled selected>Select Tournament</option>
                 {% for t in tournaments %}
-                    <option value="{{ t[0] }}">{{ t[1] }}</option>
+                    <option value="{{ t[0] }}" data-game="{{ t[2] }}">{{ t[1] }}</option>
                 {% endfor %}
             </select><br>
 
@@ -40,5 +37,13 @@
             <p style="color: lime;">✅ Registered successfully!</p>
         {% endif %}
     </div>
+
+    <script>
+        document.getElementById('tournamentSelect').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const game = selectedOption.getAttribute('data-game');
+            document.getElementById('gameInput').value = game || '';
+        });
+    </script>
 </body>
 </html>

@@ -1,17 +1,15 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 import sqlite3
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 
-
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'  # 🔹 Define this FIRST
+UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# 🔹 Ensure upload folder exists
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -21,6 +19,7 @@ def init_db():
     c.execute("""CREATE TABLE IF NOT EXISTS tournaments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
+        game TEXT,
         date TEXT,
         time TEXT,
         room_id TEXT,
@@ -39,8 +38,7 @@ def init_db():
     conn.close()
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def home():
@@ -51,26 +49,22 @@ def admin():
     conn = sqlite3.connect('tournaments.db')
     c = conn.cursor()
 
-    # Insert new tournament if form submitted
     if request.method == 'POST':
         name = request.form['name']
+        game = request.form['game']
         date = request.form['date']
         time = request.form['time']
         room_id = request.form['room_id']
         room_pass = request.form['room_pass']
-        c.execute("INSERT INTO tournaments (name, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?)",
-                  (name, date, time, room_id, room_pass))
+        c.execute("INSERT INTO tournaments (name, game, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?, ?)",
+                  (name, game, date, time, room_id, room_pass))
         conn.commit()
 
-    # Get tournaments list
     c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
 
-    # Check if filter is applied
     selected_id = request.args.get('filter_tournament')
-
     if selected_id:
-        # Only show registrations for selected tournament
         c.execute("""
             SELECT r.name, r.mobile, r.pubg_id, r.game, t.name, r.screenshot
             FROM registrations r
@@ -79,7 +73,6 @@ def admin():
             ORDER BY r.id DESC
         """, (selected_id,))
     else:
-        # Show all registrations
         c.execute("""
             SELECT r.name, r.mobile, r.pubg_id, r.game, t.name, r.screenshot
             FROM registrations r
@@ -98,14 +91,17 @@ def register():
     c = conn.cursor()
     c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
-    print("Fetched tournaments:", tournaments)
 
     if request.method == 'POST':
         name = request.form['name']
         mobile = request.form['mobile']
         pubg_id = request.form['pubg_id']
-        game = request.form['game']
         tournament_id = int(request.form['tournament_id'])
+
+        # Fetch game for the selected tournament
+        c.execute("SELECT game FROM tournaments WHERE id = ?", (tournament_id,))
+        result = c.fetchone()
+        game = result[0] if result else "Unknown"
 
         file = request.files['screenshot']
         if file and allowed_file(file.filename):
@@ -118,12 +114,23 @@ def register():
         c.execute("INSERT INTO registrations (name, mobile, pubg_id, game, screenshot, tournament_id) VALUES (?, ?, ?, ?, ?, ?)",
                   (name, mobile, pubg_id, game, filename, tournament_id))
         conn.commit()
-        print(f"[DEBUG] Registered: {name}, {mobile}, {pubg_id}, {game}, Tournament ID: {tournament_id}, Screenshot: {filename}")
         conn.close()
         return render_template("success.html")
 
     conn.close()
     return render_template("register.html", tournaments=tournaments)
+
+@app.route('/get_game_for_tournament/<int:tournament_id>')
+def get_game_for_tournament(tournament_id):
+    conn = sqlite3.connect('tournaments.db')
+    c = conn.cursor()
+    c.execute("SELECT game FROM tournaments WHERE id = ?", (tournament_id,))
+    result = c.fetchone()
+    conn.close()
+    if result:
+        return jsonify({"game": result[0]})
+    else:
+        return jsonify({"game": ""})
 
 init_db()
 
