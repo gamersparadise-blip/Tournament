@@ -51,6 +51,7 @@ def admin():
     conn = sqlite3.connect('tournaments.db')
     c = conn.cursor()
 
+    # Insert new tournament if form submitted
     if request.method == 'POST':
         name = request.form['name']
         date = request.form['date']
@@ -61,20 +62,35 @@ def admin():
                   (name, date, time, room_id, room_pass))
         conn.commit()
 
-    # ✅ No extra indent here
-    c.execute("SELECT * FROM tournaments ORDER BY id DESC")
+    # Get tournaments list
+    c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
 
-    c.execute("""
-        SELECT r.name, r.mobile, r.pubg_id, r.game, t.name as tournament_name, r.screenshot
-        FROM registrations r
-        JOIN tournaments t ON r.tournament_id = t.id
-        ORDER BY r.id DESC
-    """)
-    registrations = c.fetchall()
+    # Check if filter is applied
+    selected_id = request.args.get('filter_tournament')
 
+    if selected_id:
+        # Only show registrations for selected tournament
+        c.execute("""
+            SELECT r.name, r.mobile, r.pubg_id, r.game, t.name, r.screenshot
+            FROM registrations r
+            JOIN tournaments t ON r.tournament_id = t.id
+            WHERE t.id = ?
+            ORDER BY r.id DESC
+        """, (selected_id,))
+    else:
+        # Show all registrations
+        c.execute("""
+            SELECT r.name, r.mobile, r.pubg_id, r.game, t.name, r.screenshot
+            FROM registrations r
+            JOIN tournaments t ON r.tournament_id = t.id
+            ORDER BY r.id DESC
+        """)
+
+    registrations = c.fetchall()
     conn.close()
-    return render_template("admin.html", tournaments=tournaments, registrations=registrations)
+
+    return render_template("admin.html", tournaments=tournaments, registrations=registrations, selected_id=selected_id)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
