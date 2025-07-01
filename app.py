@@ -51,16 +51,17 @@ def admin():
 
     if request.method == 'POST':
         name = request.form['name']
-        game = request.form['game']
-        date = request.form['date']
-        time = request.form['time']
-        room_id = request.form['room_id']
-        room_pass = request.form['room_pass']
+game = request.form['game']
+date = request.form['date']
+time = request.form['time']
+room_id = request.form['room_id']
+room_pass = request.form['room_pass']
+
         c.execute("INSERT INTO tournaments (name, game, date, time, room_id, room_pass) VALUES (?, ?, ?, ?, ?, ?)",
-                  (name, game, date, time, room_id, room_pass))
+          (name, game, date, time, room_id, room_pass))
         conn.commit()
 
-    c.execute("SELECT id, name FROM tournaments ORDER BY id DESC")
+    c.execute("SELECT id, name, game FROM tournaments ORDER BY id DESC")
     tournaments = c.fetchall()
 
     selected_id = request.args.get('filter_tournament')
